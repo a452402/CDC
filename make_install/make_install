@@ -1,0 +1,120 @@
+# -----------------------------------------------------------------------------
+# File Name
+MAKEFILENAME = make_install
+
+# Machine Type
+PRO_MACHINE_TYPE = x86e_win64
+
+# Executable names
+EXE = pt_inst_test.exe
+EXE_DLL = UD_SAVP_8010.dll
+
+# Pro/Toolkit Source & Machine Loadpoint  (EXTERNAL USE - DEFAULT)
+#PROTOOL_SRC = C:/PROGRA~1/PTC/CREO70~2.0/COMMON~1/protoolkit
+PROTOOL_SRC = C:/PROGRA~1/PTC/CREO80~1.0/COMMON~1/protoolkit
+PROTOOL_SYS = $(PROTOOL_SRC)/$(PRO_MACHINE_TYPE)
+
+# Pro/Toolkit Source & Machine Loadpoint  (PTC INTERNAL USE)
+#PROTOOL_SRC = $(PTCSRC)/protoolkit
+#PROTOOL_SYS = $(PTCSYS)
+
+ICU_PATH = $(PROTOOL_SYS)/obj
+
+# Include File Paths
+INCS = -I. -I$(PROTOOL_SRC)/protk_appls/includes -I$(PROTOOL_SRC)/includes 
+
+# Compiler Flags
+CC = cl
+MACH = -DPRO_MACHINE=36 -DPRO_OS=4
+#debug#CCFLAGS = -c -GS -fp:precise -D_WSTDIO_DEFINED -D_USING_V110_SDK71_
+CCFLAGS = -c -GS -fp:precise -D_WSTDIO_DEFINED -D_USING_V110_SDK71_ /Od /Z7
+CFLAGS = $(CCFLAGS) $(INCS) $(MACH)
+
+# Libraries
+PTCLIBS = $(PROTOOL_SYS)/obj/protoolkit_NU.lib    \
+		  $(ICU_PATH)/ucore.lib                   \
+		  $(ICU_PATH)/udata.lib 
+PTCLIBS_DLL = $(PROTOOL_SYS)/obj/protk_dll_NU.lib \
+		  $(ICU_PATH)/ucore.lib                   \
+		  $(ICU_PATH)/udata.lib 
+LIBS = libcmt.lib kernel32.lib user32.lib wsock32.lib advapi32.lib mpr.lib winspool.lib netapi32.lib psapi.lib gdi32.lib shell32.lib comdlg32.lib ole32.lib ws2_32.lib
+
+# Object files
+OBJS = main.obj mainCustom.obj Holes_HoleTableSection.obj ModulesSection.obj FeaturesSection.obj InputFile.obj ParametersSection.obj CoordinateSystemsSection.obj CommonUtil.obj Test.obj
+
+# Linker
+LINK = link
+
+$(EXE) :  $(OBJS) $(PTCLIBS)
+	@echo Start at `date`
+	@echo PROTOOL_SRC = $(PROTOOL_SRC)
+        @echo PROTOOL_SYS = $(PROTOOL_SYS)
+#Executable applications compiled using WinMain() instead of main() should set the subsystem to windows instead of console.
+#debug# $(LINK) /subsystem:console -out:$(EXE) /debug:none /machine:amd64 @<<longline.list
+	$(LINK) /subsystem:console -out:$(EXE) /debug /machine:amd64 @<<longline.list
+$(OBJS) $(PTCLIBS) $(LIBS)
+<<
+	
+	@echo Finished at `date`
+#debug# del $(OBJS)
+
+# Dll target
+dll: $(EXE_DLL)
+
+$(EXE_DLL) :  $(OBJS) $(PTCLIBS_DLL)
+	@echo Start at `date`
+	@echo PROTOOL_SRC = $(PROTOOL_SRC)
+        @echo PROTOOL_SYS = $(PROTOOL_SYS)
+#debug# $(LINK) /subsystem:console -out:$(EXE_DLL) /debug:none /machine:amd64 /dll @<<longline.list
+	$(LINK) /subsystem:console -out:$(EXE_DLL) /debug /machine:amd64 /dll @<<longline.list
+$(OBJS) $(PTCLIBS_DLL) $(LIBS)
+<<
+
+	@echo Finished at `date`
+#debug# del $(OBJS)
+
+# object dependencies
+
+#PROTK_INST = $(PROTOOL_SRC)/protk_appls/pt_install_test/pt_install_src
+PROTK_INST = D:\00_Local_Iwasaki\07_Parametric\GitFolder_UDTrucks\00_source\ToolKitDll_BatchMode\make_install
+PROTK_UTILS = $(PROTOOL_SRC)/protk_appls/pt_examples/pt_utils
+
+main.obj:  $(PROTK_INST)/main.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/main.c
+
+mainCustom.obj:  $(PROTK_INST)/mainCustom.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/mainCustom.c
+
+InputFile.obj:  $(PROTK_INST)/InputFile.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/InputFile.c
+
+CommonUtil.obj:  $(PROTK_INST)/CommonUtil.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/CommonUtil.c
+
+ParametersSection.obj:  $(PROTK_INST)/ParametersSection.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/ParametersSection.c
+
+ModulesSection.obj:  $(PROTK_INST)/ModulesSection.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/ModulesSection.c
+
+FeaturesSection.obj:  $(PROTK_INST)/FeaturesSection.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/FeaturesSection.c
+
+Holes_HoleTableSection.obj:  $(PROTK_INST)/Holes_HoleTableSection.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/Holes_HoleTableSection.c
+
+Test.obj:  $(PROTK_INST)/Test.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/Test.c
+
+CoordinateSystemsSection.obj:  $(PROTK_INST)/CoordinateSystemsSection.c
+	$(CC) $(CFLAGS) $(PROTK_INST)/CoordinateSystemsSection.c
+
+clean :
+	del $(OBJS)
+	del $(EXE)
+	nmake -f $(MAKEFILENAME)
+
+clean_dll :
+	del $(OBJS)
+	del $(EXE_DLL)
+	nmake -f $(MAKEFILENAME) dll

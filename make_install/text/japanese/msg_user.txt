@@ -1,0 +1,28 @@
+﻿USER %0s
+%0s
+%0s
+
+-Install Test Label
+-Install Test
+-インストールテスト
+
+-Install Test Help
+-PTC Creo Parametric TOOLKIT Installation Test
+-PTC Creo Parametric TOOLKIT インストールテスト
+
+Creo Parametric TOOLKIT Compilers Label
+-PTC Creo Parametric TOOLKIT Compilers
+-PTC Creo Parametric TOOLKIT コンパイラ
+
+Creo Parametric TOOLKIT Compilers Help
+Open the platform support page
+プラットフォームサポートページを開く
+
+USER Succeeded
+The PTC Creo Parametric TOOLKIT Installation Test succeeded
+PTC Creo Parametric TOOLKIT インストールテスト成功
+
+USER Failed
+The PTC Creo Parametric TOOLKIT Installation Test failed
+PTC Creo Parametric TOOLKIT インストールテスト失敗
+
